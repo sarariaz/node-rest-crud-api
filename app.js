@@ -34,10 +34,27 @@ app.get("/dogs", function(req,res){
         }
     });
 });
-// new dogs route
+// new dogs form route
 app.get("/dogs/new", function(req,res){
     res.render("form.ejs");
-})
+});
+
+//add new user
+app.post("/dogs", function(req,res){
+    const { id, name  }= req.body;
+    if(!name){
+        res.status(400).send({ error: true, message: "Please provide the dog name" });
+
+             }
+     dbConn.query(`INSERT INTO dogs (id, name) values ('${id}' , '${name}')`, function(err, results, field){
+         if(err){
+             throw err;
+         }
+         else{
+             res.send({ error: false , data: results, message: "Added a new dog successfully"});
+         }
+     }
+)})
  // set port
  app.listen(3000, function () {
     console.log('Node app is running on port 3000');
