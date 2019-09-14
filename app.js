@@ -33,13 +33,28 @@ app.get("/dogs", function(req,res){
             res.send(data);
         }
     });
+
+});
+// fetch single dog
+app.get("/dogs/:id", function(req, res){
+   let user_id = req.params.id;
+   if(!user_id){
+       res.status(400).send({error: true, message: "Please provide the Dog ID"});
+
+   }
+   dbConn.query('SELECT * FROM dogs where id=?', user_id, function(err, results, fields){
+       if(err){
+           throw err;
+       }
+       res.send({error: false , data: results[0] ,message: 'Specific Dog List '});
+   });
 });
 // new dogs form route
 app.get("/dogs/new", function(req,res){
     res.render("form.ejs");
 });
 
-//add new user
+//add new user (create)
 app.post("/dogs", function(req,res){
     const { id, name  }= req.body;
     if(!name){
@@ -54,7 +69,9 @@ app.post("/dogs", function(req,res){
              res.send({ error: false , data: results, message: "Added a new dog successfully"});
          }
      }
-)})
+)});
+
+
  // set port
  app.listen(3000, function () {
     console.log('Node app is running on port 3000');
